@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== SWIPER PAGINATION DOTS ===== */
+.swiper-pagination-bullet {
+  background-color: white !important;
+  opacity: 0.7;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #0ea5e9 !important; /* sky-500 */
+  opacity: 1;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-slide {
+  animation: slideInRight 0.3s ease forwards;
+}
+
+.toast-slide[data-state="removed"] {
+  animation: slideOutRight 0.3s ease forwards;
+}

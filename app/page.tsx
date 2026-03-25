@@ -1,0 +1,122 @@
+import React from "react";
+
+const projects = [
+  { name: "Villa 17", location: "Boat Avenue" },
+  { name: "Villa 26", location: "Boat Avenue" },
+  { name: "Villa Cortds", location: "Laguna" },
+  { name: "Villa 54", location: "Cape Yamu" },
+];
+
+const staff = [
+  { name: "Nirun Chankol", email: "nirun@gmail.com" },
+  { name: "Kansire Chankol", email: "....@gmail.com" },
+  { name: "Phannita Winyupradit", email: "....@gmail.com" },
+];
+
+const workers = [
+  {
+    team: "Electric System Teams",
+    members: ["Chacrit Popu"],
+  },
+  {
+    team: "Water Supply System Teams",
+    members: ["Paniti Chankol", "....."],
+  },
+  {
+    team: "Air Conditioning System Teams",
+    members: ["Nirun Chankol"],
+  },
+];
+
+const Home: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+
+      {/* PROJECTS */}
+      <h2 className="text-lg font-semibold mb-3">Projects</h2>
+      
+
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+    {projects.map((p, i) => (
+        <div
+        key={i}
+        className="bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between hover:shadow-lg transition"
+        >
+        <div>
+            <h3 className="font-semibold text-gray-800 text-sm md:text-base">
+            {p.name}
+            </h3>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
+            {p.location}
+            </p>
+        </div>
+
+        <button className="mt-3 border border-gray-300 text-xs md:text-sm py-1.5 rounded-lg hover:bg-gray-100 transition">
+            View Detail
+        </button>
+        </div>
+    ))}
+    </div>
+
+      {/* STAFF + WORKERS */}
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        
+        {/* STAFF */}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold mb-3">Staffs</h2>
+          {staff.map((s, i) => (
+            <div key={i} className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gray-300 rounded-full" />
+              <div>
+                <p className="text-sm font-medium">{s.name}</p>
+                <p className="text-xs text-blue-600">{s.email}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* WORKERS */}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold mb-3">Workers</h2>
+          {workers.map((w, i) => (
+            <div key={i} className="mb-4">
+              <p className="text-sm font-semibold">{w.team}</p>
+              {w.members.map((m, j) => (
+                <div key={j} className="flex items-center gap-3 mt-2">
+                  <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                  <p className="text-sm">{m}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* QUICK ACCESS */}
+    <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
+
+<div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+  {["Schedules", "Stocks", "Messages"].map((item, i) => (
+    <div
+      key={i}
+      className="bg-blue-50 p-4 md:p-5 rounded-2xl shadow-md flex flex-col justify-between hover:shadow-lg transition"
+    >
+      {/* Title */}
+      <h3 className="text-center font-semibold text-sm md:text-base text-blue-700">
+        {item}
+      </h3>
+
+      {/* Button */}
+      <button className="mt-4 bg-white text-blue-600 text-xs md:text-sm py-2 rounded-lg hover:bg-gray-100 transition">
+        Go to {item}
+      </button>
+    </div>
+  ))}
+</div>
+
+    </div>
+  );
+};
+
+export default Home;
