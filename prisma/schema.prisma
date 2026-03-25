@@ -19,7 +19,6 @@ model Worker {
   id     Int    @id @default(autoincrement())
   name   String
   team   String
-  role   String
 
   schedules Schedule[]
 }

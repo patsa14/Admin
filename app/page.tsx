@@ -1,5 +1,6 @@
 import React from "react";
 
+
 const projects = [
   { name: "Villa 17", location: "Boat Avenue" },
   { name: "Villa 26", location: "Boat Avenue" },
