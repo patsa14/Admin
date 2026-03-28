@@ -7,14 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ================= USER (LOGIN) =================
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+
+  client    Client?   // relation
+}
+
+// ================= CLIENT PROFILE =================
+model Client {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  property  String
+  location  String
+  status    String
+
+  projects  Project[]
+}
+
+// ================= PROJECT =================
 model Project {
-  id       Int    @id @default(autoincrement())
-  name     String
-  location String
+  id        Int      @id @default(autoincrement())
+  name      String
+  location  String
+
+  clientId  Int
+  client    Client   @relation(fields: [clientId], references: [id])
 
   schedules Schedule[]
 }
 
+// ================= WORKER =================
 model Worker {
   id     Int    @id @default(autoincrement())
   name   String
@@ -23,6 +54,7 @@ model Worker {
   schedules Schedule[]
 }
 
+// ================= SCHEDULE =================
 model Schedule {
   id        Int      @id @default(autoincrement())
   workerId  Int
@@ -33,4 +65,13 @@ model Schedule {
 
   worker  Worker  @relation(fields: [workerId], references: [id])
   project Project @relation(fields: [projectId], references: [id])
+}
+
+// ================= CONTACT =================
+model ContactForm {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  message   String
+  createdAt DateTime @default(now())
 }
