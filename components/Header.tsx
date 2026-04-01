@@ -49,7 +49,7 @@ export default function Header({
     { label: 'Home', href: '/' },
     { label: 'Schedule', href: '/schedule' },
     { label: 'Stock', href: '/stock' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Client', href: '/clients' },
   ];
 
   return (

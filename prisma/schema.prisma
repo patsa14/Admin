@@ -26,9 +26,8 @@ model Client {
   userId    Int      @unique
   user      User     @relation(fields: [userId], references: [id])
 
-  property  String
   location  String
-  status    String
+  progress  Int      @default(0)
 
   projects  Project[]
 }
