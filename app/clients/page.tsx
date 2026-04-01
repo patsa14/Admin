@@ -5,6 +5,14 @@ import { useEffect, useState } from "react"
 export default function ClientsPage() {
   const [clients, setClients] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState<any[]>([])
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+
+  const fetchUsers = async () => {
+  const res = await fetch("/api/users")
+  const data = await res.json()
+  setUsers(data)
+}
 
   const fetchClients = async () => {
     try {
@@ -18,6 +26,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     fetchClients()
+    fetchUsers()
   }, [])
 
   const handleDelete = async (id: number) => {
@@ -32,33 +41,27 @@ export default function ClientsPage() {
   }
 
   const handleCreate = async () => {
-  try {
-    const res = await fetch("/api/clients", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: 1,
-        location: "Test Villa",
-        progress: 50,
-      }),
-    })
-
-    // 🔥 FIX: check before parsing
-    if (!res.ok) {
-      const text = await res.text()
-      console.error("Server error:", text)
-      return
-    }
-
-    const data = await res.json()
-    console.log("Created:", data)
-
-    fetchClients()
-  } catch (error) {
-    console.error("Create error:", error)
+  if (!selectedUserId) {
+    alert("Please select a user")
+    return
   }
+
+  const res = await fetch("/api/clients", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: selectedUserId,
+      location: "Test Villa",
+      progress: 50,
+    }),
+  })
+
+  const data = await res.json()
+  console.log(data)
+
+  fetchClients()
 }
 
   const handleUpdate = async (id: number) => {
@@ -83,15 +86,25 @@ export default function ClientsPage() {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Client Portfolio</h1>
+      <select
+  onChange={(e) => setSelectedUserId(Number(e.target.value))}
+  className="border px-3 py-2 rounded-lg"
+>
+  <option value="">Select Client</option>
+  {users.map((u) => (
+    <option key={u.id} value={u.id}>
+      {u.name}
+    </option>
+  ))}
+</select>
 
       {/* CREATE BUTTON */}
       <button
         onClick={handleCreate}
-        disabled={loading}
         className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-      >
-        {loading ? "Adding..." : "+ Add Client"}
-      </button>
+        >
+        + Add Client
+        </button>
 
       {/* TABLE */}
       <div className="bg-white rounded-xl border overflow-hidden">

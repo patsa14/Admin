@@ -1,21 +1,20 @@
 import prisma from "@/lib/prisma"
 
-// GET all clients
+// GET
 export async function GET() {
   const clients = await prisma.client.findMany({
     include: { user: true },
   })
-
   return Response.json(clients)
 }
 
-// CREATE client (FIXED)
+// POST
 export async function POST(req: Request) {
   const body = await req.json()
 
   const client = await prisma.client.create({
     data: {
-      userId: body.userId,   // ✅ ONLY THIS
+      userId: body.userId,
       location: body.location,
       progress: body.progress,
     },
