@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Client" ALTER COLUMN "progress" DROP DEFAULT,
+ALTER COLUMN "progress" SET DATA TYPE TEXT;

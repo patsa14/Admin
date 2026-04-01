@@ -27,7 +27,7 @@ model Client {
   user      User     @relation(fields: [userId], references: [id])
 
   location  String
-  progress  Int      @default(0)
+  progress  String      
 
   projects  Project[]
 }

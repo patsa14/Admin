@@ -8,6 +8,10 @@ export default function ClientsPage() {
   const [users, setUsers] = useState<any[]>([])
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
 
+  const [editId, setEditId] = useState<number | null>(null)
+  const [editLocation, setEditLocation] = useState("")
+  const [editProgress, setEditProgress] = useState("")
+
   const fetchUsers = async () => {
   const res = await fetch("/api/users")
   const data = await res.json()
@@ -53,8 +57,8 @@ export default function ClientsPage() {
     },
     body: JSON.stringify({
       userId: selectedUserId,
-      location: "Test Villa",
-      progress: 50,
+      location: "Add Location",
+      progress: "Select progress",
     }),
   })
 
@@ -73,7 +77,7 @@ export default function ClientsPage() {
   },
   body: JSON.stringify({
     location: "Updated Location",
-    progress: 80,
+    progress: "Completed"
   }),
 })
 
@@ -122,36 +126,77 @@ export default function ClientsPage() {
             {clients.map((c) => (
               <tr key={c.id} className="border-t">
                 <td className="p-4">{c.user?.name || "No Name"}</td>
-                <td className="p-4">{c.location}</td>
+                <td className="p-4">
+                {editId === c.id ? (
+                    <input
+                    value={editLocation}
+                    onChange={(e) => setEditLocation(e.target.value)}
+                    className="border px-2 py-1 rounded"
+                    />
+                ) : (
+                    c.location
+                )}
+                </td>
 
                 {/* Progress */}
-                <td className="p-4 w-1/3">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full"
-                      style={{ width: `${c.progress || 0}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {c.progress || 0}%
-                  </p>
+                <td className="p-4">
+                {editId === c.id ? (
+                    <select
+                    value={editProgress}
+                    onChange={(e) => setEditProgress(e.target.value)}
+                    className="border px-2 py-1 rounded"
+                    >
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    </select>
+                ) : (
+                    <span>{c.progress}</span>
+                )}
                 </td>
 
                 {/* ACTIONS */}
                 <td className="p-4 flex gap-2">
-                  <button
-                    onClick={() => handleUpdate(c.id)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded"
-                  >
-                    Edit
-                  </button>
+                {editId === c.id ? (
+                    <button
+                    onClick={async () => {
+                        await fetch(`/api/clients/${c.id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            location: editLocation,
+                            progress: editProgress,
+                        }),
+                        })
 
-                  <button
+                        setEditId(null) // exit edit mode
+                        fetchClients()  // refresh data
+                    }}
+                    className="bg-green-600 text-white px-2 py-1 rounded"
+                    >
+                    Save
+                    </button>
+                ) : (
+                    <button
+                    onClick={() => {
+                        setEditId(c.id)
+                        setEditLocation(c.location)
+                        setEditProgress(c.progress)
+                    }}
+                    className="bg-yellow-500 text-white px-2 py-1 rounded"
+                    >
+                    Edit
+                    </button>
+                )}
+
+                <button
                     onClick={() => handleDelete(c.id)}
                     className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
+                >
                     Delete
-                  </button>
+                </button>
                 </td>
               </tr>
             ))}
