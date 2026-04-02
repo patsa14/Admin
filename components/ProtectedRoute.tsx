@@ -26,5 +26,4 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   return isAuthenticated ? <>{children}</> : null; 
 };
-
 export default ProtectedRoute;

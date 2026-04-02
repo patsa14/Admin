@@ -5,18 +5,28 @@ import { revalidatePath } from "next/cache"
 
 // ➕ Add Project
 export async function addProject(formData: FormData) {
-  try {
-    const name = formData.get("name") as string
-    const location = formData.get("location") as string
+    console.log("🔥 ADD PROJECT CLICKED")
 
-    if (!name?.trim()) return
+  try {
+    // ✅ Safe string extraction
+    const name = formData.get("name")?.toString().trim()
+    const location = formData.get("location")?.toString().trim() || ""
+ 
+    console.log("DATA:", { name, location })
+
+    if (!name) {
+      console.log("❌ NAME EMPTY")
+      return
+    }
 
     await prisma.project.create({
       data: {
-        name: name.trim(),
-        location: location?.trim() || "",
+        name,
+        location,
       },
     })
+     
+    console.log("✅ SAVED SUCCESS")
 
     revalidatePath("/schedule")
   } catch (error) {
@@ -27,15 +37,15 @@ export async function addProject(formData: FormData) {
 // ➕ Add Worker
 export async function addWorker(formData: FormData) {
   try {
-    const name = formData.get("name") as string
-    const team = formData.get("team") as string
+    const name = formData.get("name")?.toString().trim()
+    const team = formData.get("team")?.toString().trim() || "General"
 
-    if (!name?.trim()) return
+    if (!name) return
 
     await prisma.worker.create({
       data: {
-        name: name.trim(),
-        team: team?.trim() || "General",
+        name,
+        team,
       },
     })
 
@@ -50,25 +60,24 @@ export async function addSchedule(formData: FormData) {
   try {
     const workerId = Number(formData.get("workerId"))
     const projectId = Number(formData.get("projectId"))
-    const dateRaw = formData.get("date") as string
-    const startTime = formData.get("startTime") as string
-    const endTime = formData.get("endTime") as string
+    const dateRaw = formData.get("date")?.toString()
+    const startTime = formData.get("startTime")?.toString() || "08:00"
+    const endTime = formData.get("endTime")?.toString() || "16:00"
+
     const start = new Date(`1970-01-01T${startTime}`)
     const end = new Date(`1970-01-01T${endTime}`)
 
     if (end <= start) {
-    console.log("Invalid time")
-    return
+      console.log("Invalid time")
+      return
     }
-    // ✅ VALIDATION
+
     if (!workerId || !projectId || !dateRaw) {
       console.log("Missing data")
       return
     }
 
     const date = new Date(dateRaw)
-
-    // ❗ Prevent invalid date crash
     if (isNaN(date.getTime())) {
       console.log("Invalid date")
       return
@@ -79,8 +88,8 @@ export async function addSchedule(formData: FormData) {
         workerId,
         projectId,
         date,
-        startTime: startTime || "08:00",
-        endTime: endTime || "16:00",
+        startTime,
+        endTime,
       },
     })
 

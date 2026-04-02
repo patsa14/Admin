@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useTransition } from "react"
 
 export default function AddEntityModal({ addProject, addWorker }: any) {
   const [open, setOpen] = useState(false)
   const [type, setType] = useState("project")
+  const [pending, startTransition] = useTransition()
 
   return (
     <>
@@ -49,10 +51,15 @@ export default function AddEntityModal({ addProject, addWorker }: any) {
         </div>
 
             {type === "project" ? (
-              <form action={addProject} className="space-y-2">
+              <form
+                action={(formData) =>
+                    startTransition(() => addProject(formData))
+                }
+                className="space-y-2"
+                >
                 <input name="name" placeholder="Project Name" className="border p-2 w-full" />
                 <input name="location" placeholder="Location" className="border p-2 w-full" />
-                <button className="bg-sky-700 text-white w-full py-2 rounded">Add Project</button>
+                <button type="submit" className="bg-sky-700 text-white w-full py-2 rounded">Add Project</button>
               </form>
             ) : (
               <form action={addWorker} className="space-y-2">
