@@ -3,19 +3,28 @@
 import { useState } from "react"
 import { useTransition } from "react"
 
-export default function AddEntityModal({ addProject, addWorker }: any) {
+export default function AddEntityModal({
+  addProject,
+  addWorker,
+  defaultType = "project",
+  label = "+ Add",
+}: any) {
   const [open, setOpen] = useState(false)
-  const [type, setType] = useState("project")
+  const [type, setType] = useState(defaultType)
   const [pending, startTransition] = useTransition()
+  
 
   return (
     <>
       <button
-    onClick={() => setOpen(true)}
-    className="bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-md text-sm hover:bg-emerald-500 transition"
-    >
-    + Add
-    </button>
+  onClick={() => {
+    setType(defaultType) // reset type when opening
+    setOpen(true)
+  }}
+  className="bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-md text-sm hover:bg-emerald-500 transition"
+>
+  {label}
+</button>
 
       {open && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
@@ -24,33 +33,9 @@ export default function AddEntityModal({ addProject, addWorker }: any) {
 
             <h2 className="text-lg font-semibold">Add New</h2>
 
-            <div className="flex gap-2">
-  <button
-    type="button"
-    onClick={() => setType("project")}
-    className={`flex-1 py-1 rounded ${
-      type === "project"
-        ? "bg-sky-700 text-white"
-        : "bg-gray-200 text-gray-600"
-    }`}
-        >
-            Project
-        </button>
+            
 
-        <button
-            type="button"
-            onClick={() => setType("worker")}
-            className={`flex-1 py-1 rounded ${
-            type === "worker"
-                ? "bg-cyan-700 text-white"
-                : "bg-gray-200 text-gray-600"
-            }`}
-        >
-            Worker
-        </button>
-        </div>
-
-            {type === "project" ? (
+            {defaultType === "project" ? (
               <form
                 action={(formData) =>
                     startTransition(() => addProject(formData))

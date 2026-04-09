@@ -33,9 +33,22 @@ export default async function SchedulePage() {
         <h1 className="text-xl font-bold">Schedule System</h1>
 
         <div className="flex gap-2">
-          <AddEntityModal addProject={addProject} addWorker={addWorker} />
-          <AddScheduleModal workers={workers} projects={projects} action={addSchedule} />
-        </div>
+  <AddEntityModal
+    addProject={addProject}
+    addWorker={addWorker}
+    defaultType="project"
+    label="+ Add Project"
+  />
+
+  <AddEntityModal
+    addProject={addProject}
+    addWorker={addWorker}
+    defaultType="worker"
+    label="+ Add Worker"
+  />
+
+  <AddScheduleModal workers={workers} projects={projects} action={addSchedule} />
+</div>
       </div>
 
       {/* CALENDAR */}
