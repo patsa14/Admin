@@ -110,99 +110,114 @@ export default function ClientsPage() {
         + Add Client
         </button>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-500">
-            <tr>
-              <th className="p-4 text-left">Client</th>
-              <th className="p-4 text-left">Location</th>
-              <th className="p-4 text-left">Progress</th>
-              <th className="p-4 text-left">Actions</th>
-            </tr>
-          </thead>
+      
+       {/* CARD LIST */}
+<div className="grid grid-cols-3 gap-6">
+  {clients.map((c) => (
+    <div
+      key={c.id}
+      className="relative p-5 bg-white border rounded-2xl shadow hover:shadow-xl hover:scale-105 transition group"
+    >
+      {/* NAME */}
+      <h2 className="text-lg font-bold">
+        {c.user?.name || "No Name"}
+      </h2>
 
-          <tbody>
-            {clients.map((c) => (
-              <tr key={c.id} className="border-t">
-                <td className="p-4">{c.user?.name || "No Name"}</td>
-                <td className="p-4">
-                {editId === c.id ? (
-                    <input
-                    value={editLocation}
-                    onChange={(e) => setEditLocation(e.target.value)}
-                    className="border px-2 py-1 rounded"
-                    />
-                ) : (
-                    c.location
-                )}
-                </td>
+      {/* LOCATION */}
+      <div className="mt-2">
+        {editId === c.id ? (
+          <input
+            value={editLocation}
+            onChange={(e) => setEditLocation(e.target.value)}
+            className="border px-2 py-1 rounded w-full"
+          />
+        ) : (
+          <p className="text-gray-500">{c.location}</p>
+        )}
+      </div>
 
-                {/* Progress */}
-                <td className="p-4">
-                {editId === c.id ? (
-                    <select
-                    value={editProgress}
-                    onChange={(e) => setEditProgress(e.target.value)}
-                    className="border px-2 py-1 rounded"
-                    >
-                    <option value="Not Started">Not Started</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    </select>
-                ) : (
-                    <span>{c.progress}</span>
-                )}
-                </td>
+      {/* PROGRESS */}
+      <div className="mt-2">
+        {editId === c.id ? (
+          <select
+            value={editProgress}
+            onChange={(e) => setEditProgress(e.target.value)}
+            className="border px-2 py-1 rounded w-full"
+          >
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        ) : (
+          <p>
+            Status:{" "}
+            <span className="font-semibold">{c.progress}</span>
+          </p>
+        )}
+      </div>
 
-                {/* ACTIONS */}
-                <td className="p-4 flex gap-2">
-                {editId === c.id ? (
-                    <button
-                    onClick={async () => {
-                        await fetch(`/api/clients/${c.id}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            location: editLocation,
-                            progress: editProgress,
-                        }),
-                        })
+      {/* ACTIONS */}
+      <div className="flex gap-2 mt-4">
+        {editId === c.id ? (
+          <button
+            onClick={async () => {
+              await fetch(`/api/clients/${c.id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  location: editLocation,
+                  progress: editProgress,
+                }),
+              })
 
-                        setEditId(null) // exit edit mode
-                        fetchClients()  // refresh data
-                    }}
-                    className="bg-green-600 text-white px-2 py-1 rounded"
-                    >
-                    Save
-                    </button>
-                ) : (
-                    <button
-                    onClick={() => {
-                        setEditId(c.id)
-                        setEditLocation(c.location)
-                        setEditProgress(c.progress)
-                    }}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded"
-                    >
-                    Edit
-                    </button>
-                )}
+              setEditId(null)
+              fetchClients()
+            }}
+            className="bg-green-600 text-white px-3 py-1 rounded"
+          >
+            Save
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setEditId(c.id)
+              setEditLocation(c.location)
+              setEditProgress(c.progress)
+            }}
+            className="bg-yellow-500 text-white px-3 py-1 rounded"
+          >
+            Edit
+          </button>
+        )}
 
-                <button
-                    onClick={() => handleDelete(c.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                    Delete
-                </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <button
+          onClick={() => handleDelete(c.id)}
+          className="bg-red-500 text-white px-3 py-1 rounded"
+        >
+          Delete
+        </button>
+      </div>
+
+      {/* DETAIL BUTTON */}
+      <a
+        href={`/clients/${c.id}`}
+        className="inline-block mt-3 text-blue-500 text-sm"
+      >
+        View Details →
+      </a>
+
+      {/* HOVER POPUP */}
+      <div className="absolute opacity-0 group-hover:opacity-100 transition bg-black text-white text-xs p-3 rounded-xl top-2 right-2 w-48">
+        <p>Email: {c.user?.email}</p>
+        <p>Phone: {c.user?.phone || "-"}</p>
+        <p>Address: {c.user?.address || "-"}</p>
       </div>
     </div>
+  ))}
+</div>
+      </div>
+
   )
 }
