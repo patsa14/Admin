@@ -83,7 +83,7 @@ export default function ClientsPage() {
 
   return (
     <div className="p-6 space-y-6 relative w-full lg:max-w-[1400px] mx-auto">
-      <h1 className="text-2xl font-semibold">Client Portfolio</h1>
+      <h1 className="text-2xl font-semibold">Client Information</h1>
 
       {/* Success alert */}
       {successMessage && (

@@ -50,6 +50,7 @@ export default function Header({
     { label: 'Schedule', href: '/schedule' },
     { label: 'Stock', href: '/stock' },
     { label: 'Client', href: '/clients' },
+    { label: 'Progress', href: '/progress' },
   ];
 
   return (

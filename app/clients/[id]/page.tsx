@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 
 export default function ClientDetailPage() {
   const params = useParams() // ✅ get dynamic route param
   const id = params?.id
+  const router = useRouter() // <-- for navigation
 
   const [client, setClient] = useState<any>(null)
   const [projectName, setProjectName] = useState("")
@@ -33,19 +34,30 @@ export default function ClientDetailPage() {
   }, [id])
 
   const handleUpdate = async () => {
-    try {
-      const res = await fetch(`/api/clients/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectName, location }),
-      })
-      if (!res.ok) throw new Error("Update failed")
-      const updated = await res.json()
-      setClient(updated)
-      alert("Saved!")
-    } catch (err: any) {
-      alert(err.message || "Update error")
-    }
+  try {
+    const res = await fetch(`/api/clients/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectName, location }),
+    })
+    if (!res.ok) throw new Error("Update failed")
+
+    // ✅ Update only the fields we changed
+    setClient((prev: any) => ({
+      ...prev,
+      projectName,
+      location,
+      updatedAt: new Date().toISOString(), // optional: show last updated time
+    }))
+
+    alert("Saved Successfully!")
+  } catch (err: any) {
+    alert(err.message || "Update error")
+  }
+}
+
+  const handleBack = () => {
+    router.push("/clients") // <-- go back to client CRUD/list page
   }
 
   if (loading) return <p>Loading...</p>
@@ -72,12 +84,20 @@ export default function ClientDetailPage() {
           className="border p-2 w-full rounded"
           placeholder="Location"
         />
+        <div className="mt-4 flex gap-2">
         <button
-          onClick={handleUpdate}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            onClick={handleUpdate}
+            className="flex-1 bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
         >
-          Update
+            Update
         </button>
+        <button
+            onClick={handleBack}
+            className="flex-1 bg-gray-300 text-gray-800 text-sm px-2 py-1 rounded hover:bg-gray-400 transition"
+        >
+            Back
+        </button>
+        </div>
       </div>
     </div>
   )
