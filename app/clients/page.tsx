@@ -82,7 +82,7 @@ export default function ClientsPage() {
     : clients
 
   return (
-    <div className="p-6 space-y-6 relative max-w-6xl mx-auto">
+    <div className="p-6 space-y-6 relative w-full lg:max-w-[1400px] mx-auto">
       <h1 className="text-2xl font-semibold">Client Portfolio</h1>
 
       {/* Success alert */}
@@ -98,15 +98,15 @@ export default function ClientsPage() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search by client name..."
-        className="border p-2 w-full max-w-sm rounded mb-4"
+        className="border p-2 w-full sm:max-w-md rounded mb-4"
       />
 
       {/* select + add */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <select
           value={selectedUserId}
           onChange={(e) => setSelectedUserId(e.target.value)}
-          className="border px-3 py-2 rounded-lg"
+          className="border px-3 py-2 rounded-lg flex-1"
         >
           <option value="">Select Client</option>
           {users.map((u) => (
@@ -118,7 +118,7 @@ export default function ClientsPage() {
 
         <button
           onClick={handleCreate}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full sm:w-auto"
         >
           + Add Client
         </button>
@@ -129,7 +129,7 @@ export default function ClientsPage() {
         {filteredClients.map((c) => (
           <div
             key={c.id}
-            className="relative group p-5 bg-white border rounded-2xl shadow hover:shadow-xl hover:scale-105 transition"
+            className="relative group p-6 bg-white border rounded-2xl shadow hover:shadow-xl hover:scale-105 transition"
           >
             <h2 className="font-bold text-lg">{c.user?.name}</h2>
             <p className="mt-1 text-sm">
@@ -142,6 +142,7 @@ export default function ClientsPage() {
               Address: {c.user?.address || "-"}
             </p>
 
+            {/* Buttons at bottom */}
             <div className="mt-4 flex gap-2">
               <a
                 href={`/clients/${c.id}`}
@@ -158,7 +159,7 @@ export default function ClientsPage() {
             </div>
 
             {/* HOVER POPUP */}
-            <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-gray-800/80 text-white text-xs p-3 rounded-xl top-2 right-2 w-52 pointer-events-none group-hover:pointer-events-auto shadow-lg">
+            <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-gray-800/70 text-white text-xs p-3 rounded-xl top-2 right-2 w-52 shadow-lg pointer-events-none group-hover:pointer-events-auto">
               <p>Email: {c.user?.email}</p>
               <p>Phone: {c.user?.phone || "-"}</p>
               <p>Location: {c.location}</p>
