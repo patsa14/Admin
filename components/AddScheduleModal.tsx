@@ -4,24 +4,34 @@ import { useState } from "react"
 
 export default function AddScheduleModal({ workers, projects, action }: any) {
   const [open, setOpen] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   return (
     <>
-      {/* Button */}
+      {/* BUTTON */}
       <button
         onClick={() => setOpen(true)}
-        className="bg-sky-100 text-sky-800 px-3 py-1.5 rounded-md text-sm hover:bg-sky-500 transition"
-        >
+        className="bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-md text-sm hover:bg-indigo-600 hover:text-white transition"
+      >
         + Add Schedule
-        </button>
+      </button>
 
-
-      {/* Modal */}
+      {/* MODAL */}
       {open && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
-
           <form
-            action={action}
+  onSubmit={async (e) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.currentTarget)
+
+    await action(formData)
+
+    setOpen(false)
+    setSuccess(true)
+
+    setTimeout(() => setSuccess(false), 2000)
+  }}
             className="bg-white p-6 rounded-2xl shadow-xl w-[340px] space-y-4"
           >
             <h2 className="text-lg font-semibold text-gray-800">
@@ -33,7 +43,9 @@ export default function AddScheduleModal({ workers, projects, action }: any) {
               <label className="text-xs text-gray-500">Worker</label>
               <select name="workerId" className="border rounded-lg p-2 w-full mt-1">
                 {workers.map((w: any) => (
-                  <option key={w.id} value={w.id}>{w.name}</option>
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -43,7 +55,9 @@ export default function AddScheduleModal({ workers, projects, action }: any) {
               <label className="text-xs text-gray-500">Project</label>
               <select name="projectId" className="border rounded-lg p-2 w-full mt-1">
                 {projects.map((p: any) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -51,7 +65,11 @@ export default function AddScheduleModal({ workers, projects, action }: any) {
             {/* Date */}
             <div>
               <label className="text-xs text-gray-500">Date</label>
-              <input type="date" name="date" className="border rounded-lg p-2 w-full mt-1" />
+              <input
+                type="date"
+                name="date"
+                className="border rounded-lg p-2 w-full mt-1"
+              />
             </div>
 
             {/* Time */}
@@ -87,14 +105,20 @@ export default function AddScheduleModal({ workers, projects, action }: any) {
                 Cancel
               </button>
 
-              <button className="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm">
+              <button className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-indigo-700">
                 Save
               </button>
             </div>
           </form>
-
         </div>
       )}
+
+      {/* SUCCESS POPUP */}
+      {success && (
+  <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-white px-4 py-2 rounded-xl shadow-lg text-sm">
+    🎉 Added successfully!
+  </div>
+)}
     </>
   )
 }

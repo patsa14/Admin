@@ -32,12 +32,13 @@ export default async function SchedulePage() {
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">Schedule System</h1>
 
-        <div className="flex gap-2">
+       <div className="flex gap-2">
   <AddEntityModal
     addProject={addProject}
     addWorker={addWorker}
     defaultType="project"
     label="+ Add Project"
+    buttonClass="bg-sky-100 text-sky-700 hover:bg-sky-600 hover:text-white"
   />
 
   <AddEntityModal
@@ -45,9 +46,14 @@ export default async function SchedulePage() {
     addWorker={addWorker}
     defaultType="worker"
     label="+ Add Worker"
+    buttonClass="bg-cyan-100 text-cyan-700 hover:bg-cyan-600 hover:text-white"
   />
 
-  <AddScheduleModal workers={workers} projects={projects} action={addSchedule} />
+  <AddScheduleModal
+    workers={workers}
+    projects={projects}
+    action={addSchedule}
+  />
 </div>
       </div>
 
