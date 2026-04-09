@@ -138,9 +138,7 @@ export default function ClientsPage() {
             <p className="text-sm text-gray-600">
               Location: {c.location}
             </p>
-            <p className="text-sm text-gray-600">
-              Address: {c.user?.address || "-"}
-            </p>
+        
 
             {/* Buttons at bottom */}
             <div className="mt-4 flex gap-2">

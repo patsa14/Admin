@@ -65,40 +65,63 @@ export default function ClientDetailPage() {
   if (!client) return <p>No client found</p>
 
   return (
-    <div className="p-6 max-w-md mx-auto space-y-4">
-      <h1 className="text-2xl font-bold">{client.user?.name}</h1>
-      <p>Email: {client.user?.email}</p>
-      <p>Phone: {client.user?.phone || "-"}</p>
-      <p>Address: {client.user?.address || "-"}</p>
+  <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-20">
+  <div className="w-full max-w-5xl bg-white shadow-lg rounded-xl p-8 space-y-6">
+    {/* Header */}
+    <h1 className="text-2xl font-bold text-gray-800 text-center">{client.user?.name}</h1>
 
-      <div className="mt-4 space-y-3">
+    {/* User Info Card */}
+<div className="bg-gray-50 p-4 rounded-lg shadow-inner space-y-2">
+  <p><span className="font-semibold">Email:</span> {client.user?.email || "-"}</p>
+  <p><span className="font-semibold">Phone:</span> {client.user?.phone || "-"}</p>
+  <p><span className="font-semibold">Address:</span> {client.user?.address || "-"}</p>
+</div>
+
+    {/* Update Form */}
+    <div className="space-y-4">
+      <div className="flex flex-col">
+        <label htmlFor="projectName" className="text-gray-600 font-medium mb-1">
+          Project Name
+        </label>
         <input
+          id="projectName"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
-          className="border p-2 w-full rounded"
-          placeholder="Project Name"
+          className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          placeholder="Enter project name"
         />
+      </div>
+
+      <div className="flex flex-col">
+        <label htmlFor="location" className="text-gray-600 font-medium mb-1">
+          Location
+        </label>
         <input
+          id="location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="border p-2 w-full rounded"
-          placeholder="Location"
+          className="border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          placeholder="Enter location"
         />
-        <div className="mt-4 flex gap-2">
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-2 mt-2">
         <button
-            onClick={handleUpdate}
-            className="flex-1 bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
+          onClick={handleUpdate}
+          className="flex-1 bg-blue-500 text-white text-sm px-2 py-2 rounded hover:bg-blue-600 transition font-semibold shadow"
         >
-            Update
+          Update
         </button>
         <button
-            onClick={handleBack}
-            className="flex-1 bg-gray-300 text-gray-800 text-sm px-2 py-1 rounded hover:bg-gray-400 transition"
+          onClick={handleBack}
+          className="flex-1 bg-gray-300 text-gray-800 text-sm px-2 py-2 rounded hover:bg-gray-400 transition font-semibold shadow"
         >
-            Back
+          Back
         </button>
-        </div>
       </div>
     </div>
-  )
+  </div>
+  </div>
+)
 }
