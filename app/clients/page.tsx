@@ -32,7 +32,6 @@ export default function ClientsPage() {
       }),
     })
 
-    // refresh
     const res = await fetch("/api/clients")
     setClients(await res.json())
   }
@@ -68,10 +67,12 @@ export default function ClientsPage() {
         {clients.map((c) => (
           <div
             key={c.id}
-            className="p-5 bg-white border rounded-2xl shadow hover:shadow-xl transition"
+            className="relative group p-5 bg-white border rounded-2xl shadow hover:shadow-xl hover:scale-105 transition"
           >
+            {/* NAME */}
             <h2 className="font-bold">{c.user?.name}</h2>
 
+            {/* PROJECT */}
             <p className="mt-2 text-sm">
               Project:{" "}
               <span className="font-semibold">
@@ -79,12 +80,20 @@ export default function ClientsPage() {
               </span>
             </p>
 
+            {/* DETAIL */}
             <a
               href={`/clients/${c.id}`}
               className="text-blue-500 text-sm mt-3 inline-block"
             >
               View Details →
             </a>
+
+            {/* HOVER POPUP */}
+            <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-black text-white text-xs p-3 rounded-xl top-2 right-2 w-48">
+              <p>Email: {c.user?.email}</p>
+              <p>Phone: {c.user?.phone || "-"}</p>
+              <p>Location: {c.location}</p>
+            </div>
           </div>
         ))}
       </div>
