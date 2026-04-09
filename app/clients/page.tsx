@@ -7,27 +7,20 @@ export default function ClientsPage() {
   const [users, setUsers] = useState<any[]>([])
   const [selectedUserId, setSelectedUserId] = useState("")
   const [successMessage, setSuccessMessage] = useState<string>("")
+  const [search, setSearch] = useState("")
 
   // Fetch clients
   const fetchClients = async () => {
-    try {
-      const res = await fetch("/api/clients", { cache: "no-store" })
-      const data = await res.json()
-      setClients(data)
-    } catch (err: any) {
-      window.alert(err.message)
-    }
+    const res = await fetch("/api/clients", { cache: "no-store" })
+    const data = await res.json()
+    setClients(data)
   }
 
   // Fetch users
   const fetchUsers = async () => {
-    try {
-      const res = await fetch("/api/users")
-      const data = await res.json()
-      setUsers(data)
-    } catch (err: any) {
-      window.alert(err.message)
-    }
+    const res = await fetch("/api/users")
+    const data = await res.json()
+    setUsers(data)
   }
 
   useEffect(() => {
@@ -35,7 +28,7 @@ export default function ClientsPage() {
     fetchUsers()
   }, [])
 
-  // Handle add client
+  // Handle create
   const handleCreate = async () => {
     if (!selectedUserId) return window.alert("Select user first")
 
@@ -49,16 +42,10 @@ export default function ClientsPage() {
           projectName: "No Project",
         }),
       })
-
       if (!res.ok) throw new Error("Failed to add client")
-
-      const newClient = await res.json() // ✅ should include user
-
-      // Update clients list instantly
+      const newClient = await res.json()
       setClients((prev) => [...prev, newClient])
       setSelectedUserId("")
-
-      // Show success popup
       setSuccessMessage("Client added successfully!")
       setTimeout(() => setSuccessMessage(""), 2000)
     } catch (err: any) {
@@ -66,7 +53,7 @@ export default function ClientsPage() {
     }
   }
 
-  // Handle delete client
+  // Handle delete
   const handleDelete = async (id: number) => {
     const confirmed = window.confirm("Are you sure you want to delete this client?")
     if (!confirmed) return
@@ -77,14 +64,9 @@ export default function ClientsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       })
-
       const data = await res.json()
       if (!data.success) throw new Error(data.message)
-
-      // Remove client from state instantly
       setClients((prev) => prev.filter((c) => c.id !== id))
-
-      // Show success popup
       setSuccessMessage("Client deleted successfully!")
       setTimeout(() => setSuccessMessage(""), 2000)
     } catch (err: any) {
@@ -92,9 +74,16 @@ export default function ClientsPage() {
     }
   }
 
+  // Filter clients by search
+  const filteredClients = search
+    ? clients.filter((c) =>
+        c.user?.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : clients
+
   return (
-    <div className="p-6 space-y-6 relative">
-      <h1 className="text-2xl font-semibold">Client Information</h1>
+    <div className="p-6 space-y-6 relative max-w-6xl mx-auto">
+      <h1 className="text-2xl font-semibold">Client Portfolio</h1>
 
       {/* Success alert */}
       {successMessage && (
@@ -103,8 +92,17 @@ export default function ClientsPage() {
         </div>
       )}
 
+      {/* Search bar */}
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search by client name..."
+        className="border p-2 w-full max-w-sm rounded mb-4"
+      />
+
       {/* select + add */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 mb-4">
         <select
           value={selectedUserId}
           onChange={(e) => setSelectedUserId(e.target.value)}
@@ -120,53 +118,57 @@ export default function ClientsPage() {
 
         <button
           onClick={handleCreate}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
         >
           + Add Client
         </button>
       </div>
 
-      {/* client cards */}
-      <div className="grid grid-cols-3 gap-6">
-        {clients.map((c) => (
+      {/* cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredClients.map((c) => (
           <div
-  key={c.id}
-  className="relative group p-5 min-h-[200px] bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg hover:scale-105 transition-all duration-300 flex flex-col"
->
-  <h2 className="font-semibold text-lg text-gray-800">{c.user?.name}</h2>
+            key={c.id}
+            className="relative group p-5 bg-white border rounded-2xl shadow hover:shadow-xl hover:scale-105 transition"
+          >
+            <h2 className="font-bold text-lg">{c.user?.name}</h2>
+            <p className="mt-1 text-sm">
+              Project: <span className="font-semibold">{c.projectName}</span>
+            </p>
+            <p className="text-sm text-gray-600">
+              Location: {c.location}
+            </p>
+            <p className="text-sm text-gray-600">
+              Address: {c.user?.address || "-"}
+            </p>
 
-  <p className="mt-2 text-sm text-gray-600">
-    Project: <span className="font-medium text-gray-900">{c.projectName}</span>
-  </p>
+            <div className="mt-4 flex gap-2">
+              <a
+                href={`/clients/${c.id}`}
+                className="flex-1 bg-blue-500 text-white text-center text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
+              >
+                View Details
+              </a>
+              <button
+                onClick={() => handleDelete(c.id)}
+                className="flex-1 bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600 transition"
+              >
+                Delete
+              </button>
+            </div>
 
-  {/* buttons at the bottom */}
-  <div className="mt-auto flex gap-2 pt-2">
-    <button
-      onClick={() => window.location.href = `/clients/${c.id}`}
-      className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium shadow hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
-    >
-      View Details
-    </button>
-
-    <button
-      onClick={() => handleDelete(c.id)}
-      className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-medium shadow hover:from-red-600 hover:to-red-700 transition-all duration-300"
-    >
-      Delete
-    </button>
-  </div>
-
-  {/* HOVER POPUP */}
-  <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 
-                  transition-all duration-200 bg-black text-white text-xs p-3 rounded-xl 
-                  top-2 right-2 w-48 pointer-events-none group-hover:pointer-events-auto shadow-lg">
-    <p>Email: {c.user?.email}</p>
-    <p>Phone: {c.user?.phone || "-"}</p>
-    <p>Address: {c.user?.address || "-"}</p>
-    <p>Location: {c.location}</p>
-  </div>
-</div>
+            {/* HOVER POPUP */}
+            <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-gray-800/80 text-white text-xs p-3 rounded-xl top-2 right-2 w-52 pointer-events-none group-hover:pointer-events-auto shadow-lg">
+              <p>Email: {c.user?.email}</p>
+              <p>Phone: {c.user?.phone || "-"}</p>
+              <p>Location: {c.location}</p>
+              <p>Address: {c.user?.address || "-"}</p>
+            </div>
+          </div>
         ))}
+        {filteredClients.length === 0 && (
+          <p className="text-gray-500 col-span-full">No client found.</p>
+        )}
       </div>
     </div>
   )
