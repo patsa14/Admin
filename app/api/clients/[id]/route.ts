@@ -7,8 +7,8 @@ export async function PUT(req: Request, { params }: any) {
   const updated = await prisma.client.update({
     where: { id: Number(params.id) },
     data: {
-      location: body.location,
-      progress: body.progress,
+    location: body.location,
+    projectName: body.projectName,
     },
   })
 

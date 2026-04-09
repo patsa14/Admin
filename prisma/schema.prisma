@@ -27,8 +27,7 @@ model Client {
   user      User     @relation(fields: [userId], references: [id])
 
   location  String
-  progress  String      
-
+  projectName String @default("No Project")    
 }
 
 // ================= PROJECT =================

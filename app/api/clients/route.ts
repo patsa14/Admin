@@ -13,12 +13,12 @@ export async function POST(req: Request) {
   const body = await req.json()
 
   const client = await prisma.client.create({
-    data: {
-      userId: body.userId,
-      location: body.location,
-      progress: body.progress,
-    },
-  })
+  data: {
+    userId: body.userId,
+    location: body.location,
+    projectName: body.projectName, // ✅ เปลี่ยนตรงนี้
+  },
+})
 
   return Response.json(client)
 }
