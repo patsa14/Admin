@@ -1,13 +1,7 @@
-import React from "react";
+"use client"
+
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
-
-
-const projects = [
-  { name: "Villa 17", slug: "villa-17", location: "Boat Avenue" },
-  { name: "Villa 26", slug: "villa-26", location: "Boat Avenue" },
-  { name: "Villa Cortds", slug: "villa-cortds", location: "Laguna" },
-  { name: "Villa 54", slug: "villa-54", location: "Cape Yamu" },
-];
 
 const staff = [
   { name: "Nirun Chankol", email: "nirun@gmail.com" },
@@ -31,36 +25,48 @@ const workers = [
 ];
 
 const Home: React.FC = () => {
+  const [projects, setProjects] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const res = await fetch("/api/projects")
+      const data = await res.json()
+      setProjects(data)
+    }
+
+    fetchProjects()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
       {/* PROJECTS */}
       <h2 className="text-lg font-semibold mb-3">Projects</h2>
       
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+        {projects.map((p) => (
+          <div
+            key={p.id}
+            className="bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between hover:shadow-lg transition"
+          >
+            <div>
+              <h3 className="font-semibold text-gray-800 text-sm md:text-base">
+                {p.name}
+              </h3>
+              <p className="text-xs md:text-sm text-gray-500 mt-1">
+                {p.location}
+              </p>
+            </div>
 
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
-    {projects.map((p, i) => (
-        <div
-        key={i}
-        className="bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between hover:shadow-lg transition"
-        >
-        <div>
-            <h3 className="font-semibold text-gray-800 text-sm md:text-base">
-            {p.name}
-            </h3>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">
-            {p.location}
-            </p>
-        </div>
-
-        <Link href={`/projects/${p.slug}`}>
-  <button className="mt-3 border border-gray-300 text-xs md:text-sm py-1.5 rounded-lg hover:bg-gray-100 transition w-full">
-    View Detail
-  </button>
-</Link>
-        </div>
-    ))}
-    </div>
+            {/* ✅ FIXED LINK */}
+            <Link href={`/project/${p.id}`}>
+              <button className="mt-3 border border-gray-300 text-xs md:text-sm py-1.5 rounded-lg hover:bg-gray-100 transition w-full">
+                View Detail
+              </button>
+            </Link>
+          </div>
+        ))}
+      </div>
 
       {/* STAFF + WORKERS */}
       <div className="grid grid-cols-2 gap-6 mb-6">
@@ -98,35 +104,32 @@ const Home: React.FC = () => {
       </div>
 
       {/* QUICK ACCESS */}
-    <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
+      <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
 
-<div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-  {[
-  { name: "Schedules", href: "/schedule" },
-  { name: "Stocks", href: "/stock" },
-  { name: "Messages", href: "/messages" },
-].map((item, i) => (
-  <div
-    key={i}
-    className="bg-blue-50 p-4 md:p-5 rounded-2xl shadow-md flex flex-col justify-between hover:shadow-lg transition"
-  >
-    {/* Title */}
-    <h3 className="text-center font-semibold text-sm md:text-base text-blue-700">
-      {item.name}
-    </h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        {[
+          { name: "Schedules", href: "/schedule" },
+          { name: "Stocks", href: "/stock" },
+        ].map((item, i) => (
+          <div
+            key={i}
+            className="bg-blue-50 p-4 md:p-5 rounded-2xl shadow-md flex flex-col justify-between hover:shadow-lg transition"
+          >
+            <h3 className="text-center font-semibold text-sm md:text-base text-blue-700">
+              {item.name}
+            </h3>
 
-    {/* Button */}
-    <Link href={item.href}>
-      <button className="mt-4 w-full bg-white text-blue-600 text-xs md:text-sm py-2 rounded-lg hover:bg-gray-100 transition">
-        Go to {item.name}
-      </button>
-    </Link>
-  </div>
-))}
-</div>
+            <Link href={item.href}>
+              <button className="mt-4 w-full bg-white text-blue-600 text-xs md:text-sm py-2 rounded-lg hover:bg-gray-100 transition">
+                Go to {item.name}
+              </button>
+            </Link>
+          </div>
+        ))}
+      </div>
 
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
