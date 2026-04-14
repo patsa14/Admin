@@ -17,33 +17,34 @@ model User {
   address   String?
   createdAt DateTime @default(now())
 
-  client    Client?   // relation
+  client  Client? // relation
+  history History[]
 }
 
 // ================= CLIENT PROFILE =================
 model Client {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  user      User     @relation(fields: [userId], references: [id])
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 
-  location  String
-  projectName String @default("No Project")    
+  location    String
+  projectName String @default("No Project")
 }
 
 // ================= PROJECT =================
 model Project {
-  id        Int      @id @default(autoincrement())
-  name      String
-  location  String
+  id       Int    @id @default(autoincrement())
+  name     String
+  location String
 
   schedules Schedule[]
 }
 
 // ================= WORKER =================
 model Worker {
-  id     Int    @id @default(autoincrement())
-  name   String
-  team   String
+  id   Int    @id @default(autoincrement())
+  name String
+  team String
 
   schedules Schedule[]
 }
@@ -68,4 +69,14 @@ model ContactForm {
   email     String   @unique
   message   String
   createdAt DateTime @default(now())
+}
+
+model History {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  projectName String
+  location    String
+  completedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }

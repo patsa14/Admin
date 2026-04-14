@@ -51,6 +51,7 @@ export default function Header({
     { label: 'Stock', href: '/stock' },
     { label: 'Client', href: '/clients' },
     { label: 'Progress', href: '/progress' },
+    { label: 'History', href: '/history' },
   ];
 
   return (

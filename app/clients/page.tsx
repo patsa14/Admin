@@ -81,6 +81,43 @@ export default function ClientsPage() {
       )
     : clients
 
+  const handleDone = async (client: any) => {
+  const confirmed = window.confirm("Mark this project as done?")
+  if (!confirmed) return
+
+  try {
+    // 1. Save to history
+    await fetch("/api/history", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: client.userId,
+        projectName: client.projectName,
+        location: client.location,
+      }),
+    })
+
+    // 2. Delete client
+    await fetch("/api/clients", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: client.id }),
+    })
+
+    // 3. Update UI
+    setClients((prev) => prev.filter((c) => c.id !== client.id))
+
+    setSuccessMessage("Project marked as done!")
+    setTimeout(() => setSuccessMessage(""), 2000)
+  } catch (err: any) {
+    alert(err.message)
+  }
+}
+
   return (
     <div className="p-6 space-y-6 relative w-full lg:max-w-[1400px] mx-auto">
       <h1 className="text-2xl font-semibold">Client Information</h1>
@@ -142,19 +179,27 @@ export default function ClientsPage() {
 
             {/* Buttons at bottom */}
             <div className="mt-4 flex gap-2">
-              <a
-                href={`/clients/${c.id}`}
-                className="flex-1 bg-blue-500 text-white text-center text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
-              >
-                View Details
-              </a>
-              <button
-                onClick={() => handleDelete(c.id)}
-                className="flex-1 bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600 transition"
-              >
-                Delete
-              </button>
-            </div>
+            <a
+              href={`/clients/${c.id}`}
+              className="flex-1 bg-blue-500 text-white text-center text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
+            >
+              View Details
+            </a>
+
+            <button
+              onClick={() => handleDone(c)}
+              className="flex-1 bg-green-500 text-white text-sm px-2 py-1 rounded hover:bg-green-600 transition"
+            >
+              Done
+            </button>
+
+            <button
+              onClick={() => handleDelete(c.id)}
+              className="flex-1 bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </div>
 
             {/* HOVER POPUP */}
             <div className="absolute opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 bg-gray-800/70 text-white text-xs p-3 rounded-xl top-2 right-2 w-52 shadow-lg pointer-events-none group-hover:pointer-events-auto">
